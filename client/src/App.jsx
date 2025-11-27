@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import ReportForm from './components/ReportForm'
 import Homepage from './components/Homepage'
+import AdminDashboard from './components/AdminDashboard'
 
 export default function App(){
   const [currentPage, setCurrentPage] = useState('home')
@@ -15,6 +16,7 @@ export default function App(){
             <button onClick={() => setCurrentPage('home')} className={`text-sm font-medium ${currentPage === 'home' ? 'text-purple-600' : 'text-gray-600 hover:text-gray-900'}`}>Home</button>
             <button onClick={() => setCurrentPage('report')} className={`text-sm font-medium ${currentPage === 'report' ? 'text-purple-600' : 'text-gray-600 hover:text-gray-900'}`}>Submit Report</button>
             <button onClick={() => setCurrentPage('resources')} className={`text-sm font-medium ${currentPage === 'resources' ? 'text-purple-600' : 'text-gray-600 hover:text-gray-900'}`}>Resources</button>
+            <button onClick={() => setCurrentPage('admin')} className={`text-sm font-medium ${currentPage === 'admin' ? 'text-purple-600' : 'text-gray-600 hover:text-gray-900'}`}>Admin</button>
           </nav>
         </div>
       </header>
@@ -39,10 +41,16 @@ export default function App(){
               </div>
               <div className="border-l-4 border-blue-600 pl-4">
                 <h3 className="text-lg font-semibold text-gray-900">Online Support</h3>
-                <p className="text-gray-600 mt-2">RAINN.org - Confidential support and resources</p>
+                <p className="text-gray-600 mt-2">SAFE.org - Confidential support and resources</p>
                 <p className="text-gray-600">Crisis Text Line: Text HOME to 741741</p>
               </div>
             </div>
+          </div>
+        )}
+        {currentPage === 'admin' && (
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <h2 className="text-3xl font-bold mb-6 text-gray-900">Admin Dashboard</h2>
+            <AdminDashboard />
           </div>
         )}
       </main>

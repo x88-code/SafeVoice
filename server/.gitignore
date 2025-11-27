@@ -1,0 +1,6 @@
+# Ignore local helper scripts with sensitive data
+generateHash.js
+test-bcrypt.js
+generateHashSafe.js
+test-bcrypt-safe.js
+.env.local

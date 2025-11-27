@@ -4,6 +4,7 @@ export default function ReportForm(){
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [location, setLocation] = useState('')
+  const [category, setCategory] = useState('')
   const [contactMethod, setContactMethod] = useState('')
   const [status, setStatus] = useState(null)
 
@@ -14,17 +15,24 @@ export default function ReportForm(){
       const res = await fetch('/api/reports', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, description, location, contactMethod })
+        body: JSON.stringify({ title, description, location, contactMethod, category })
       })
       if(res.ok){
         setStatus('submitted')
         setTitle('')
         setDescription('')
         setLocation('')
+        setCategory('')
         setContactMethod('')
       } else {
-        const data = await res.json()
-        setStatus(data.message || 'error')
+        const contentType = res.headers.get('content-type') || ''
+        if (contentType.includes('application/json')) {
+          const data = await res.json()
+          setStatus(data.message || 'error')
+        } else {
+          const text = await res.text()
+          setStatus(text || 'error')
+        }
       }
     }catch(err){
       console.error(err)
@@ -62,6 +70,16 @@ export default function ReportForm(){
           onChange={e=>setLocation(e.target.value)} 
           placeholder="e.g., City/District or venue name"
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition" 
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-2">Category (optional)</label>
+        <input
+          value={category}
+          onChange={e => setCategory(e.target.value)}
+          placeholder="e.g., Harassment, Safety, Accessibility"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
         />
       </div>
 

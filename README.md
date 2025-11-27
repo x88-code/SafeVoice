@@ -132,6 +132,24 @@ PORT=5000
 NODE_ENV=development
 ```
 
+## Admin Access
+
+The project includes a simple JWT-based admin authentication to protect the reports listing and review actions.
+
+Set these environment variables in the `server/.env` file:
+
+```env
+ADMIN_USER=admin
+ADMIN_PASS=admin123
+JWT_SECRET=some_long_random_secret
+```
+
+Use the admin UI from the frontend by clicking the **Admin** button in the top navigation. Sign in with the `ADMIN_USER` / `ADMIN_PASS` credentials you set in the server environment. The frontend stores the token in `localStorage` as `admin_token`.
+
+Notes:
+- For production, replace `JWT_SECRET` with a secure random value and consider using a proper user store and hashed passwords. This implementation is intentionally minimal for development.
+
+
 ## License
 
 MIT
