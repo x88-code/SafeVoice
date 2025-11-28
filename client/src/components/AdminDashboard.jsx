@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { login, getReports, markReportReviewed } from '../api'
 
 export default function AdminDashboard(){
   const [reports, setReports] = useState([])
@@ -16,19 +17,15 @@ export default function AdminDashboard(){
   const fetchReports = async (tokenOverride) => {
     setLoading(true)
     try {
-      const params = new URLSearchParams()
-      if (search) params.append('search', search)
-      if (category) params.append('category', category)
-      if (startDate) params.append('startDate', startDate)
-      if (endDate) params.append('endDate', endDate)
-      const headers = {}
+      const params = {}
+      if (search) params.search = search
+      if (category) params.category = category
+      if (startDate) params.startDate = startDate
+      if (endDate) params.endDate = endDate
       const tokenToUse = tokenOverride || token
-      if (tokenToUse) headers['Authorization'] = `Bearer ${tokenToUse}`
-      const res = await fetch(`/api/reports?${params.toString()}`, { headers })
-      const data = await res.json().catch(() => null)
-      if (!res.ok) {
-        // handle unauthorized / other errors
-        if (res.status === 401) {
+      const { data, ok, status } = await getReports(tokenToUse, params)
+      if (!ok) {
+        if (status === 401) {
           setLoginError(data && data.message ? data.message : 'Unauthorized')
           localStorage.removeItem('admin_token')
           setToken('')
@@ -51,10 +48,8 @@ export default function AdminDashboard(){
 
   const markReviewed = async (id) => {
     try {
-      const headers = { 'Content-Type': 'application/json' }
-      if (token) headers['Authorization'] = `Bearer ${token}`
-      const res = await fetch(`/api/reports/${id}/reviewed`, { method: 'PATCH', headers })
-      if (!res.ok) throw new Error('Failed')
+      const { ok } = await markReportReviewed(id, token)
+      if (!ok) throw new Error('Failed')
       setReports(prev => prev.map(r => r._id === id ? {...r, reviewed: true} : r))
     } catch (err) { console.error(err) }
   }
@@ -63,22 +58,15 @@ export default function AdminDashboard(){
     e.preventDefault()
     setLoginError('')
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: loginUsername, password: loginPassword })
-      })
-      if (!res.ok) {
-        const data = await res.json().catch(()=>({message: 'Login failed'}))
+      const { data, ok } = await login(loginUsername, loginPassword)
+      if (!ok) {
         setLoginError(data.message || 'Login failed')
         return
       }
-      const data = await res.json()
       localStorage.setItem('admin_token', data.token)
       setToken(data.token)
       setLoginPassword('')
       setLoginUsername('')
-      // Call fetchReports with the fresh token to avoid state update race
       fetchReports(data.token)
     } catch (err) {
       console.error(err)

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { submitReport } from '../api'
 
 export default function ReportForm() {
   const [title, setTitle] = useState('')
@@ -19,12 +20,8 @@ export default function ReportForm() {
 
     setStatus('loading')
     try {
-      const res = await fetch('/api/reports', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, description, location, contactMethod, category })
-      })
-      if (res.ok) {
+      const { ok } = await submitReport({ title, description, location, contactMethod, category })
+      if (ok) {
         setStatus('submitted')
         setTitle('')
         setDescription('')
@@ -36,14 +33,7 @@ export default function ReportForm() {
         // Clear success message after 5 seconds
         setTimeout(() => setStatus(null), 5000)
       } else {
-        const contentType = res.headers.get('content-type') || ''
-        if (contentType.includes('application/json')) {
-          const data = await res.json()
-          setStatus(data.message || 'error')
-        } else {
-          const text = await res.text()
-          setStatus(text || 'error')
-        }
+        setStatus('error')
       }
     } catch (err) {
       console.error(err)

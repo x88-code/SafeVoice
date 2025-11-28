@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { matchCircle } from '../api'
 
 export default function PeerSupportCircle() {
   const [step, setStep] = useState('welcome') // welcome, matching, joined, create
@@ -61,14 +62,8 @@ export default function PeerSupportCircle() {
     setError('')
     
     try {
-      const res = await fetch('/api/circles/match', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      })
-
-      const data = await res.json()
-      if (!res.ok) {
+      const { data, ok } = await matchCircle(formData)
+      if (!ok) {
         throw new Error(data.message || 'Failed to search for match')
       }
 
@@ -95,14 +90,8 @@ export default function PeerSupportCircle() {
 
     try {
       // Reuse match endpoint to ensure the user is added and receives an anonymousId
-      const res = await fetch('/api/circles/match', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      })
-
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.message || 'Failed to join circle')
+      const { data, ok } = await matchCircle(formData)
+      if (!ok) throw new Error(data.message || 'Failed to join circle')
 
       const circle = { _id: data.circle.id || data.circle._id, ...data.circle }
       setJoinedCircle(circle)
@@ -123,14 +112,8 @@ export default function PeerSupportCircle() {
 
     try {
       // Use match endpoint which will create a new circle if none exists
-      const res = await fetch('/api/circles/match', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      })
-
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.message || 'Failed to create circle')
+      const { data, ok } = await matchCircle(formData)
+      if (!ok) throw new Error(data.message || 'Failed to create circle')
 
       const circle = { _id: data.circle.id || data.circle._id, ...data.circle }
       setJoinedCircle(circle)
