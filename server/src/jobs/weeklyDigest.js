@@ -50,3 +50,4 @@ const weeklyDigestJob = cron.schedule('0 9 * * 1', async () => {
 
 module.exports = weeklyDigestJob;
 
+

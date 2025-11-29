@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import TrustLevelBadge from './TrustLevelBadge';
 import ReportButton from './ReportButton';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'https://safevoice-d9jr.onrender.com';
 
 export default function SafetyControls({ userId, circleId, trustLevel, onLeave, onBlock }) {
   const [showMenu, setShowMenu] = useState(false);

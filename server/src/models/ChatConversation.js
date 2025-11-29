@@ -67,3 +67,4 @@ ChatConversationSchema.methods.addMessage = function(role, content, language = '
 
 module.exports = mongoose.model('ChatConversation', ChatConversationSchema);
 
+

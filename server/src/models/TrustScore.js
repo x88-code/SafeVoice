@@ -63,3 +63,4 @@ const TrustScoreSchema = new mongoose.Schema({
 
 module.exports = mongoose.model('TrustScore', TrustScoreSchema);
 
+

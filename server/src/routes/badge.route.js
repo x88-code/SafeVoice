@@ -28,3 +28,4 @@ router.post('/notified', badgeController.markNotified);
 
 module.exports = router;
 
+

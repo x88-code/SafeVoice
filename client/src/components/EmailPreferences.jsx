@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'https://safevoice-d9jr.onrender.com';
 
 export default function EmailPreferences({ anonymousId, email }) {
   const [preferences, setPreferences] = useState({

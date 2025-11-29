@@ -615,7 +615,7 @@ function APIPlayground({ apiKey }) {
   const handleTryIt = async () => {
     setLoading(true);
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const API_URL = import.meta.env.VITE_API_URL || 'https://safevoice-d9jr.onrender.com';
       const options = {
         method,
         headers: {

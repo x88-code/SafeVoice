@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'https://safevoice-d9jr.onrender.com';
 
 export default function ReportButton({ reportedUserId, circleId, onReported }) {
   const [showModal, setShowModal] = useState(false);
@@ -153,4 +153,5 @@ export default function ReportButton({ reportedUserId, circleId, onReported }) {
     </>
   );
 }
+
 

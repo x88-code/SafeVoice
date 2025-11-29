@@ -3,7 +3,7 @@
  * Handles all backend communication with proper error handling and auth headers
  */
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+const API_URL = import.meta.env.VITE_API_URL || 'https://safevoice-d9jr.onrender.com'
 
 /**
  * Make API request with optional auth token
