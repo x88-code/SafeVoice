@@ -1,50 +1,75 @@
-# SafeVoice
+# 💜 SafeVoice: Beyond a Safe Voice. A Safe Space.
 
-A safety-focused reporting application for submitting anonymous incident reports. Built with a modern React frontend and Express backend.
+[](https://www.google.com/search?q=https://github.com/your-repo/safevoice/stargazers)
 
-## Project Structure
+## 🌟 Overview
 
-```
-safety-design/
-├── client/           # React + Vite frontend
-├── server/           # Express.js backend
-└── README.md         # This file
-```
+**Safe Voice** is not just a reporting application; it is a **Safe Space** or **Safe Circle** built to provide trauma-informed support. It is designed to allow users to submit **anonymous incident reports** and then, critically, connect them with real peer support.
 
-## Features
+This project utilizes a modern **React/Vite** frontend and a dedicated **Express backend** which also serves a specialized **Infrastructure as a Service (IaaS) API layer** for broader safety integration.
 
-- **Anonymous Reporting**: Submit safety incident reports anonymously
-- **Modern UI**: React frontend with Tailwind CSS
-- **RESTful API**: Express backend with MongoDB integration
-- **Real-time Development**: Hot module replacement with Vite
+## ✨ Core Features & Safe Voice Ecosystem
 
-## Prerequisites
+The Safe Voice platform delivers layered support far beyond basic incident logging:
 
-- Node.js (v14 or higher)
-- npm or yarn
-- MongoDB instance (local or Atlas)
+### 1\. **AI Peer Support & Safe Circles**
 
-## Quick Start
+  * **Anonymous Reporting**: Users submit reports completely anonymously.
+  * **AI Matching Algorithm**: Reports are processed by an intelligent AI that matches the user to other real people who have gone through a similar incident.
+  * **Peer Support Circles**: Matched users are invited to join a **"Safe Circle"** with real-time chat functionality to receive genuine peer support.
 
-### 1. Backend Setup
+### 2\. **Dual Support Pathway**
 
-Navigate to the server directory:
+  * **Chatbot Option**: If the victim chooses not to join a peer support circle, they can engage with a specialized **chatbot** for immediate informational and emotional support.
+
+### 3\. **African Contextualized Resources**
+
+  * The platform is pre-seeded with verified, location-based resources for **7 African countries**, ensuring relevant and actionable help is easily accessible.
+
+### 4\. **Infrastructure as a Service (IaaS) API**
+
+  * We offer the core AI Matching and Reporting capabilities via a robust **API Layer** to external developers.
+  * **IaaS Offering**: Other apps or systems can integrate our safety infrastructure directly.
+  * **Monetization**: This API is offered with a **Freemium tier, Monthly tier, and Annually** subscription model.
+
+## 📐 System Architecture & Development (IaaS Focus)
+
+The architecture is designed for scalability and separation, isolating the core business logic from the presentation layer and IaaS layer.
+
+| Component | Technology | Responsibility |
+| :--- | :--- | :--- |
+| **Client** | React, Vite, Tailwind CSS | Modern UI for **User Reporting** and **Admin Access**. |
+| **Server** | Express.js, MongoDB, Mongoose | **Report Management**, **IaaS API Gateway**, **Admin Authentication**. |
+| **Service Layer** (within Server) | Custom Logic | **AI Peer Matching Algorithm**, **Resource Filtering**, **Anonymous ID Generation**. |
+
+## 🚀 Quick Start
+
+Your project uses a standard full-stack setup. Please ensure you have met the prerequisites before proceeding.
+
+### Prerequisites
+
+  * Node.js (v14 or higher)
+  * npm or yarn
+  * MongoDB instance (local or Atlas)
+
+### 1\. Backend Setup
 
 ```bash
 cd server
-```
-
-Install dependencies:
-
-```bash
 npm install
 ```
 
-Create a `.env` file in the `server` directory:
+Create a `.env` file in the `server` directory and configure for both the application and Admin/API security:
 
 ```env
 MONGO_URI=your_mongodb_connection_string
 PORT=5000
+
+# ADMIN/API SECURITY
+ADMIN_USER=admin
+ADMIN_PASS=safe1234
+JWT_SECRET=some_long_random_secret
+# Note: For production, use secure, random values for all secrets.
 ```
 
 Start the development server:
@@ -53,19 +78,14 @@ Start the development server:
 npm run dev
 ```
 
-The API will be available at `http://localhost:5000`
+The **API/IaaS endpoints** will be available at `http://localhost:5000`
 
-### 2. Frontend Setup
+### 2\. Frontend Setup
 
 In a new terminal, navigate to the client directory:
 
 ```bash
 cd client
-```
-
-Install dependencies:
-
-```bash
 npm install
 ```
 
@@ -75,85 +95,82 @@ Start the development server:
 npm run dev
 ```
 
-The frontend will be available at `http://localhost:5173` (or another port if 5173 is in use)
+The frontend will be available at `http://localhost:5173` (or another port).
 
-## API Endpoints
+-----
+
+## 💻 API Endpoints
+
+The server exposes two layers of APIs: The standard application API and the IaaS API (which uses a similar structure but requires API Key authentication in production).
+
+### Application API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST   | `/api/reports` | Create an anonymous report |
-| GET    | `/api/reports` | Retrieve all reports (admin-only) |
+| POST   | `/api/reports` | **Core Feature**: Create an anonymous report and trigger AI Peer Matching. |
+| GET    | `/api/reports` | Retrieve all reports (**Admin-only access**). |
 
-### Example Request
+### IaaS Developer API Endpoints (IaaS clients)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST   | `/api/iaas/report` | Submit a report via IaaS layer (requires API Key validation). |
+| GET    | `/api/iaas/resources` | Retrieve location-based, filterable African resources (requires API Key validation). |
+
+### Example Request (Creating a Core Report)
 
 ```bash
 curl -X POST http://localhost:5000/api/reports \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "Safety Issue",
-    "description": "Description of the incident",
-    "location": "Building A"
-  }'
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Safety Issue",
+    "description": "Description of the incident",
+    "location": "Building A",
+    "country_code": "NG"
+  }'
 ```
 
-## Development
+-----
 
-### Client Commands
-
-- `npm run dev` - Start Vite development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-
-### Server Commands
-
-- `npm run dev` - Start with nodemon (auto-reload)
-- `npm start` - Run production server
-
-## Tech Stack
+## 🛠️ Tech Stack & Architecture
 
 ### Frontend
-- React 18
-- Vite
-- Tailwind CSS
-- React Router DOM
 
-### Backend
-- Express.js
-- MongoDB with Mongoose
-- CORS enabled
+  - **React 18** & **Vite**: Modern, fast development environment.
+  - **Tailwind CSS**: Utility-first CSS framework for rapid styling.
+  - **React Router DOM**
 
-## Environment Variables
+### Backend (Server)
 
-### Server (.env)
+  - **Express.js**: Robust backend framework.
+  - **MongoDB with Mongoose**: Scalable, flexible database for reports and resources.
+  - **CORS enabled**
+  - **Architecture**: Proper separation of **models/controllers/services** for clarity and scalability.
 
-```env
-MONGO_URI=mongodb+srv://user:password@cluster.mongodb.net/safevoice
-PORT=5000
-NODE_ENV=development
-```
+### Security and Infrastructure
 
-## Admin Access
+  - **API keys** and **Rate Limiting** are implemented on the IaaS layer.
+  - **Anonymous IDs** are used throughout the system for user privacy.
+  - **JWT-based admin authentication** (for `GET /api/reports`).
+
+-----
+
+## 🔒 Admin Access
 
 The project includes a simple JWT-based admin authentication to protect the reports listing and review actions.
 
-Set these environment variables in the `server/.env` file:
+  * Set `ADMIN_USER`, `ADMIN_PASS`, and `JWT_SECRET` in `server/.env`.
+  * Access the Admin UI from the frontend by clicking the **Admin** button.
+  * The frontend stores the token in `localStorage` as `admin_token`.
 
-```env
-ADMIN_USER=admin
-ADMIN_PASS=admin123
-JWT_SECRET=some_long_random_secret
-```
+> **Note**: For production, replace `JWT_SECRET` with a secure random value and consider using a proper user store and hashed passwords. This implementation is intentionally minimal for development.
 
-Use the admin UI from the frontend by clicking the **Admin** button in the top navigation. Sign in with the `ADMIN_USER` / `ADMIN_PASS` credentials you set in the server environment. The frontend stores the token in `localStorage` as `admin_token`.
+-----
 
-Notes:
-- For production, replace `JWT_SECRET` with a secure random value and consider using a proper user store and hashed passwords. This implementation is intentionally minimal for development.
-
-
-## License
+## 📄 License
 
 MIT
 
-## Support
+## ❓ Support
 
 For issues or questions, please open an issue in the repository.
