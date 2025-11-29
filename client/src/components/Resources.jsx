@@ -5,6 +5,8 @@ export default function Resources() {
   const [resources, setResources] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [seeding, setSeeding] = useState(false)
+  const [seedMessage, setSeedMessage] = useState('')
   const [filters, setFilters] = useState({
     country: '',
     type: '',
@@ -20,9 +22,14 @@ export default function Resources() {
     setError('')
     try {
       const results = await resourcesApi.search(filters)
-      setResources(results)
+      setResources(results || [])
+      if ((!results || results.length === 0) && !filters.country && !filters.type) {
+        // If no filters and no results, suggest trying with filters
+        setError('No resources found. Try searching with a country name (e.g., "Kenya", "Nigeria", "South Africa") or resource type.')
+      }
     } catch (err) {
-      setError(err.message)
+      console.error('Resources API error:', err)
+      setError(err.message || 'Failed to load resources. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -30,6 +37,30 @@ export default function Resources() {
 
   const handleSearch = () => {
     loadResources()
+  }
+
+  const handleSeedDatabase = async () => {
+    if (!confirm('This will seed the database with sample resources. Continue?')) {
+      return
+    }
+    
+    setSeeding(true)
+    setSeedMessage('')
+    setError('')
+    
+    try {
+      const result = await resourcesApi.seed()
+      setSeedMessage(result.message || `Successfully seeded ${result.count || 0} resources!`)
+      // Reload resources after seeding
+      setTimeout(() => {
+        loadResources()
+      }, 1000)
+    } catch (err) {
+      console.error('Seed error:', err)
+      setError(err.message || 'Failed to seed database. It may already be seeded.')
+    } finally {
+      setSeeding(false)
+    }
   }
 
   return (
@@ -80,6 +111,36 @@ export default function Resources() {
         </div>
       </div>
 
+      {/* Seed Database Button (hidden by default - only show in dev mode or with ?admin=true) */}
+      {(
+        import.meta.env.DEV || 
+        new URLSearchParams(window.location.search).get('admin') === 'true' ||
+        localStorage.getItem('showAdminTools') === 'true'
+      ) && (
+        <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-blue-800 font-semibold mb-1">🌱 Seed Database (Admin)</p>
+              <p className="text-blue-700 text-sm">Populate the database with sample resources from African countries</p>
+            </div>
+            <button
+              onClick={handleSeedDatabase}
+              disabled={seeding}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+            >
+              {seeding ? 'Seeding...' : 'Seed Database'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Success Message */}
+      {seedMessage && (
+        <div className="bg-green-50 border-2 border-green-300 rounded-lg p-4">
+          <p className="text-green-800 font-semibold">✅ {seedMessage}</p>
+        </div>
+      )}
+
       {/* Error */}
       {error && (
         <div className="bg-red-50 border-2 border-red-300 rounded-lg p-4">
@@ -94,7 +155,43 @@ export default function Resources() {
         ) : resources.length === 0 ? (
           <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-6 text-center">
             <p className="text-yellow-800 font-semibold mb-2">No resources found</p>
-            <p className="text-yellow-700 text-sm">Try different search filters or seed the database first via Swagger UI</p>
+            <p className="text-yellow-700 text-sm mb-4">
+              {filters.country || filters.type 
+                ? 'Try different search filters or check if the database has been seeded.'
+                : 'Try searching with a country name (e.g., "Kenya", "Nigeria", "South Africa") or select a resource type.'}
+            </p>
+            <div className="text-sm text-yellow-700 space-y-1">
+              <p><strong>Suggested searches:</strong></p>
+              <div className="flex flex-wrap gap-2 justify-center mt-2">
+                <button
+                  onClick={() => {
+                    setFilters({ country: 'Kenya', type: '' })
+                    setTimeout(() => loadResources(), 100)
+                  }}
+                  className="px-3 py-1 bg-yellow-200 hover:bg-yellow-300 rounded text-yellow-900 text-xs"
+                >
+                  Kenya Resources
+                </button>
+                <button
+                  onClick={() => {
+                    setFilters({ country: 'Nigeria', type: '' })
+                    setTimeout(() => loadResources(), 100)
+                  }}
+                  className="px-3 py-1 bg-yellow-200 hover:bg-yellow-300 rounded text-yellow-900 text-xs"
+                >
+                  Nigeria Resources
+                </button>
+                <button
+                  onClick={() => {
+                    setFilters({ country: 'South Africa', type: '' })
+                    setTimeout(() => loadResources(), 100)
+                  }}
+                  className="px-3 py-1 bg-yellow-200 hover:bg-yellow-300 rounded text-yellow-900 text-xs"
+                >
+                  South Africa Resources
+                </button>
+              </div>
+            </div>
           </div>
         ) : (
           resources.map((resource) => (

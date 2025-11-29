@@ -3,11 +3,13 @@
  * Centralized API calls for the platform
  */
 
-const API_BASE = '/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'https://safevoice-d9jr.onrender.com';
+const API_PREFIX = '/api';
 
 // Helper function for API calls
 async function apiCall(endpoint, options = {}) {
-  const url = `${API_BASE}${endpoint}`;
+  // Construct full URL: API_BASE + API_PREFIX + endpoint
+  const url = `${API_BASE}${API_PREFIX}${endpoint}`;
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -139,6 +141,13 @@ export const resourcesApi = {
     const query = params.toString();
     const response = await apiCall(`/resources${query ? `?${query}` : ''}`);
     return response.resources || [];
+  },
+  
+  seed: async () => {
+    const response = await apiCall('/resources/seed', {
+      method: 'POST'
+    });
+    return response;
   },
 };
 
